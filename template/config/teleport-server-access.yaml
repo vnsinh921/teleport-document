@@ -1,0 +1,37 @@
+version: v2
+teleport:
+  nodename: ubuntu-20.04
+  data_dir: /var/lib/teleport
+  log:
+    output: /var/log/teleport.log
+    severity:
+  ca_pin: sha256:df8dfceed44be73260d37736f9c0e5fedbd59c06b0d7b232ac9a76aeab17f45d
+  auth_token: 7d8ae42392ae8b7503dd3b76ea76aca6960689b5157f8523
+
+auth_service:
+  enabled: "yes"
+  cluster_name: "teleport-aws"
+  listen_addr: 0.0.0.0:3025
+  tokens:
+  - proxy,node:7d8ae42392ae8b7503dd3b76ea76aca6960689b5157f8523
+  authentication:
+    type: local
+    second_factor: otp
+
+ssh_service:
+  enabled: "yes"
+  labels:
+    env: example
+  commands:
+  - name: hostname
+    command: [hostname]
+    period: 1m0s
+proxy_service:
+  enabled: "yes"
+  listen_addr: 127.0.0.1:3023
+  web_listen_addr: 0.0.0.0:443
+  tunnel_listen_addr: 127.0.0.1:3024
+  public_addr: 10.0.0.76:443
+  https_keypairs: []
+  acme: {}
+
