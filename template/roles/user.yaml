@@ -1,0 +1,45 @@
+#
+# Example: Legacy Default Admin Role
+# Tip: For 6.0+ clusters, please use 'editor' for configuring Teleport
+#
+kind: role
+metadata:
+  name: user
+spec:
+  allow:
+    kubernetes_groups:
+    - '{{internal.kubernetes_groups}}'
+    windows_desktop_logins:
+    - '{{internal.windows_logins}}'
+    logins:
+    - '{{internal.logins}}'
+    node_labels:
+      '*': '*'
+    rules:
+    - resources:
+      - role
+      verbs:
+      - list
+      - read
+    - resources:
+      - session
+      verbs:
+      - list
+      - read
+    - resources:
+      - trusted_cluster
+      verbs:
+      - connect
+      - list
+      - read
+  deny:
+    logins: null
+  options:
+    cert_format: standard
+    enhanced_recording:
+    - command
+    - network
+    forward_agent: true
+    max_session_ttl: 30h0m0s
+    port_forwarding: true
+version: v3

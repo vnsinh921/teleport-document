@@ -1,0 +1,9 @@
+kind: role
+version: v4
+metadata:
+  name: windows-desktop-users
+spec:
+  allow:
+    windows_desktop_labels:
+      "*": "*"
+    windows_desktop_logins: ["{{internal.windows_logins}}"]
