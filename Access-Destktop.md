@@ -217,7 +217,50 @@ vim /etc/teleport.yaml # Insert nội dung bên dưới
 - Copy file: teleport-svc-pass.txt lên server teleport access sercer (Lưu tại thư mục: /var/lib/teleport/teleport-svc-pass.txt)
 
 <a name="5.2"></a>
-### 5.2 Config teleport access Desktop
+### 5.2 Config GPO
+
+- Open the program named Group Policy Management and find the GPO you just created ($FOREST > Domains > $DOMAIN > Group Policy Objects > Block teleport-svc Interactive Login), right-click on it and select Edit... from the context menu.
+-  Select:
+
+        Computer Configuration > Policies > Windows Settings > Security Settings > Local Policies > User Rights Assignment
+-  Double click Deny log on locally and in the popup, check Define these policy settings.
+-  Then click Add User or Group..., Browse ..., enter the SAM account name of the user you created above (svc-teleport) and hit Check Names select your Group, and then hit OK on all the windows.
+-  Repeat steps 3 and 4 for Deny log on through Remote Desktop Services (in lieu of Deny log on locally).
+
+    <img src="./images/deny-interactive-login.png" /> 
+-  Still editing your Teleport Access Policy, select:
+
+        Computer Configuration > Policies > Windows Settings > Security Settings > System Services
+-  Double click on Smart Card, select Define this policy setting and switch to Automatic then click OK.
+    <img src="./images/smartcard.png" /> 
+
+<a name="5.3"></a>
+### 5.3 Open firewall to inbound RDP connections 
+- Select:
+
+        Computer Configuration > Policies > Windows Settings > Security Settings > Windows Firewall with Advanced Security (x2)
+- Right click on Inbound Rules and select New Rule....
+- Under Predefined select Remote Desktop.
+- Only select the rule for User Mode (TCP-in).
+- On the next screen, select Allow the connection and finish.
+    <img src="./images/firwall.png" /> 
+
+<a name="5.4"></a>
+### 5.4 Allow remote RDP connections 
+- Next, select:
+
+        Computer Configuration > Policies > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host > Connections
+- Right click on Allow users to connect remotely by using Remote Desktop Services and select Edit. Select Enabled and OK.
+- Select:
+
+        Computer Configuration > Policies > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host > Security
+- Right click Require user authentication for remote connections by using Network Level Authentication, edit, select Disable and OK.
+
+   <img src="./images/disable.png" /> 
+
+
+<a name="5.5"></a>
+### 5.5 Config teleport access Desktop
 
 - vim /etc/teleport.yaml # Insert thêm nội dung bên dưới
 
@@ -241,8 +284,8 @@ vim /etc/teleport.yaml # Insert nội dung bên dưới
 - Thêm IP, domain name của LDAPS server vào file host teleport accees server
 
         echo "10.0.0.75 teleport.domain.demo " >> /etc/hosts
-<a name="5.3"></a>
-### 5.3 Tạo các roles và user cho teleport, tôi sử dụng các template bên dưới
+<a name="5.6"></a>
+### 5.6 Tạo các roles và user cho teleport, tôi sử dụng các template bên dưới
 
 - vim windows-desktop-admin.yaml
 
