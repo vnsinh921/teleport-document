@@ -1,0 +1,4 @@
+- hosts: all
+  become: yes
+  roles:
+    - {role: teleport-authen-node, tags: teleport-authen-node}

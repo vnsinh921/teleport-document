@@ -1,0 +1,6 @@
+[submodule "ansible-install/roles/teleport-agent-nodes"]
+	path = ansible-install/roles/teleport-agent-nodes
+	url = git@github.com:vnsinh921/teleport-agent-nodes.git
+[submodule "ansible-install/roles/teleport-authen-node.git"]
+	path = ansible-install/roles/teleport-authen-node.git
+	url = git@github.com:vnsinh921/teleport-authen-node.git
