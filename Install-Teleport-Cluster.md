@@ -14,7 +14,7 @@
 
 <img src="./images/teleport/overview1.png" />  
 
-### 1.1 Khởi tạo kết nối từ Client
+### 2.1 Khởi tạo kết nối từ Client
 <img src="./images/teleport/initiate.png" />  
 
 - Client khởi tạo kết nối từ SSH tới proxy từ giao diện UI hoặc CLI. Khi thiết lập kết nối Client phải cung cấp certificate của nó. Client luôn luôn phải kết nối qua proxy với 2 lý do:
