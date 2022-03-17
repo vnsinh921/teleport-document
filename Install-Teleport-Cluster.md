@@ -1,7 +1,7 @@
 ### I. Giới thiệu và kiến trúc Teleport
 ### 1. Giới thiệu
 -   Teleport là một proxy truy cập đa giao thức, nhận biết danh tính, có thể hiểu các giao thức: SSH, HTTPS, RDP, Kubernetes API, MySQL, MongoDB và PostgreSQL.
--   Dịch chuyển cho phép truy cập an toàn thuận tiện vào các tài nguyên sau NAT như:
+-   Teleport cho phép truy cập an toàn thuận tiện vào các tài nguyên sau NAT như:
     - SSH nodes 
     - Kubernetes clusters
     - PostgreSQL, MongoDB, CockroachDB and MySQL databases
