@@ -345,7 +345,7 @@
      <img src="./images/teleport/succes.png" />    
 -   Creater user sinhtv
     ```sh
-    tctl users add admin --logins=sinhtv --roles=user
+    tctl users add sinhtv --logins=sinhtv --roles=user
     ```
     ```sh
     root@teleport-access:~# tctl users add sinhtv --logins=sinhtv --roles=user
