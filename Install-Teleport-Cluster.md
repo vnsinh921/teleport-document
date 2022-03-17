@@ -28,7 +28,7 @@
 
 <img src="./images/teleport/cert_invalid.png" />
 
-- Nếu không có certificate nào được cung cấp trước đó (đăng nhập lần đầu tiên) hoặc nếu certificate đã hết hạn, proxy sẽ từ chối kết nối và yêu cầu client đăng nhập tương tác bằng mật khẩu và yếu tố thứ hai nếu (OTP) được bật.
+- Nếu không có certificate nào được cung cấp trước đó (đăng nhập lần đầu tiên) hoặc nếu certificate đã hết hạn, proxy sẽ từ chối kết nối và yêu cầu client đăng nhập tương tác bằng mật khẩu và yếu xác thực 2FA(OTP) nếu được bật.
 - Nếu thông tin xác thực là chính xác, máy chủ xác thực sẽ tạo và ký ccertificate mới và trả lại certificate đó cho client thông qua proxy.
 
 ### 2.3: Tra cứu Node
