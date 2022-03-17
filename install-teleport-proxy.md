@@ -538,12 +538,12 @@
     ```
 -   Thử kết nối bằng giao thức ssh thủ công
     ```sh   
-    sinhtv@fb1671b5c208:~$ ssh sinhtv@10.0.0.11
-    The authenticity of host '10.0.0.11 (10.0.0.11)' can't be established.
+    sinhtv@fb1671b5c208:~$ ssh sinhtv@10.20.0.11
+    The authenticity of host '10.20.0.11 (10.20.0.11)' can't be established.
     ECDSA key fingerprint is SHA256:X1E2gLp7/w529wczLAJi6PMsQ75xuNqpCPmQupCnyH4.
     Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-    Warning: Permanently added '10.0.0.11' (ECDSA) to the list of known hosts.
-    sinhtv@10.0.0.11's password: 
+    Warning: Permanently added '10.20.0.11' (ECDSA) to the list of known hosts.
+    sinhtv@10.20.0.11's password: 
     ```
 -   Login vào cluster
     ```sh
