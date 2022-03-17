@@ -1,8 +1,8 @@
 auth_token: 78yto9pc7fvf71p0lo25c1s8st9jwh1vxgoh3uw6y0t5meqvh08j
 ca_pin: sha256:965b9f078932778963dc58edec2d3d96f07d5337d3a1f97dcfedbdfa9449efc6
-node_name: pg-1
+node_name: pg-3
 auth_server: 10.20.0.5:3025
-listen_addr: 10.20.0.11:3025
+listen_addr: 10.20.0.13:3025
 role_type: node
 type_node: teleport-client
 
