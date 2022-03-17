@@ -1,8 +1,7 @@
-***Hướng dẫn cài đặt Teleport Access Desktop ***  
 ### I. Giới thiệu và kiến trúc Teleport
-### 1. Giới thiêu
+### 1. Giới thiệu
 -   Teleport là một proxy truy cập đa giao thức, nhận biết danh tính, có thể hiểu các giao thức: SSH, HTTPS, RDP, Kubernetes API, MySQL, MongoDB và PostgreSQL.
--   Dịch chuyển  cho phép truy cập an toàn thuận tiện vào các tài nguyên sau NAT như:
+-   Dịch chuyển cho phép truy cập an toàn thuận tiện vào các tài nguyên sau NAT như:
     - SSH nodes 
     - Kubernetes clusters
     - PostgreSQL, MongoDB, CockroachDB and MySQL databases
@@ -18,7 +17,7 @@
 ### 1.1 Khởi tạo kết nối từ Client
 <img src="./images/teleport/initiate.png" />  
 
-- Client khởi tạo kết nối từ SSH tới proxy giao diện UI hoặc CLI. Khi thiết lập kết nối Client phải cung cấp certificate của nó. Client luôn luôn phải kết nối qua proxy với 2 lý do:
+- Client khởi tạo kết nối từ SSH tới proxy từ giao diện UI hoặc CLI. Khi thiết lập kết nối Client phải cung cấp certificate của nó. Client luôn luôn phải kết nối qua proxy với 2 lý do:
     -   Các node không phải lúc nào cũng có thể truy cập từ một network bên ngoài
     -   Proxy ghi lại các phiên SSH và theo dõi hoạt động của người dùng
 
@@ -35,9 +34,9 @@
 ### 2.3: Tra cứu Node
 <img src="./images/teleport/node_lookup.png" />
 
--   Ở bước này, proxy cố gắng xác định vị trí node được yêu cầu trong một cụm. Có -3 cơ chế tra cứu mà proxy sử dụng để tìm địa chỉ IP của node:
+-   Ở bước này, proxy xác định vị trí node được yêu cầu trong một cụm. Có -3 cơ chế tra cứu mà proxy sử dụng để tìm địa chỉ IP của node:
     -   Sử dụng DNS để phân giải tên do Client yêu cầu.
-    -   Hỏi Auth Server nếu có một Node được đăng ký với tên node này.
+    -   Hỏi Auth Server nếu có một Node được đăng ký với tên node request kết nối.
     -   Yêu cầu Auth Server  tìm một node (hoặc các nodes) có nhãn phù hợp với tên được yêu cầu.
 -   Nếu node được định vị, proxy sẽ thiết lập kết nối giữa Client và node được yêu cầu. Sau đó, node đích bắt đầu ghi lại phiên, gửi lịch sử phiên đến máy chủ xác thực để được lưu trữ.
 
@@ -45,7 +44,7 @@
 
 <img src="./images/teleport/node_cluster_auth.png" />
 
--   Khi node nhận được yêu cầu kết nối, nó sẽ kiểm tra với Auth Server để xác thực certificate của node và xác thực tư cách thành viên Cluster của Node
+-   Khi node nhận được yêu cầu kết nối, nó sẽ kiểm tra với Auth Server để xác thực certificate của node và xác thực tư cách thành viên Cluster.
 -   Nếu certificate node hợp lệ, node được phép truy cập Auth Server API cung cấp quyền truy cập vào thông tin về các node và người dùng trong Cluster.
 
 ### 2.5 Cấp quyền truy cập Node của user
@@ -92,7 +91,7 @@
     ```sh
     apt-get update
     apt-get install teleport -y
-- Tạo file systemd teleport.server
+- Tạo file systemd teleport.service
     ```sh
     cat<<EOF>/lib/systemd/system/teleport.service
     [Unit]
@@ -226,7 +225,7 @@
         2022-03-17T21:50:36+07:00 [PROXY:1]   WARN Restart watch on error: empty proxy list. resource-kind:proxy services/watcher.go:218
         root@teleport-access:~# 
     ```
--   Check ca_pin authen server
+-   Check ca_pin Authen server
     ```sh
     root@teleport-access:~# tctl status
     Cluster  teleport-demo                                                           
@@ -388,7 +387,7 @@
         ```sh
         yum install teleport -y
         ```
-- Tạo file systemd teleport.server
+- Tạo file systemd teleport.service
     ```sh
     cat<<EOF>/lib/systemd/system/teleport.service
     [Unit]
@@ -460,8 +459,8 @@
     Mar 17 22:31:21 localhost.localdomain systemd[1]: Started Teleport SSH Service.
     Mar 17 22:31:21 localhost.localdomain teleport[9720]: [NODE]         Service 9.0.1:v9.0.1-0-g7bbe6f1 is starting on 10.20.0.11:3025.
     ```
-### 2.3 Check trạng thái node trên Auth server và Proxy server
--   Server Authen & Proxy
+### 2.3 Check trạng thái node trên server: Teleport-access
+-   Server teleport-access
     ```sh
     tctl nodes ls
     ```
@@ -536,7 +535,7 @@
     rtt min/avg/max/mdev = 1.065/1.200/1.506/0.179 ms
     sinhtv@fb1671b5c208:~$ 
     ```
--   Thử kết nối bằng giao thức ssh thủ công
+-   Kết nối bằng openssh thông thường
     ```sh   
     sinhtv@fb1671b5c208:~$ ssh sinhtv@10.20.0.11
     The authenticity of host '10.20.0.11 (10.20.0.11)' can't be established.
@@ -567,7 +566,7 @@
 
     sinhtv@fb1671b5c208:~$ 
     ```
--   Liệt kê trạng thái các node trong cluster
+-   Liệt kê các node trong cluster
     ```sh
     sinhtv@fb1671b5c208:~$ tsh ls
     Node Name       Address         Labels                                                        
@@ -578,7 +577,7 @@
     teleport-access 127.0.0.1:3022  env=example,hostname=teleport-access                          
     sinhtv@fb1671b5c208:~$ 
     ```
--   Kết nối tới 1 host trong list nodes
+-   Kết nối tới node trong list nodes bằng giao thức teleport ssh
     ```sh
     tsh ssh [USER]@[IP NODE] 
         hoặc
