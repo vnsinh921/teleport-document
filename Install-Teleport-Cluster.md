@@ -24,27 +24,27 @@
 ### 2.2 Xác thực certificate của client
 <img src="./images/teleport/cert_ok.png" />  
 
-- Proxy sẽ kiểm tra xem certificate đã gửi đã được máy chủ xác thực ký trước đó hay chưa
+- Proxy sẽ kiểm tra xem certificate đã gửi đã được auth server ký trước đó hay chưa
 
 <img src="./images/teleport/cert_invalid.png" />
 
 - Nếu không có certificate nào được cung cấp trước đó (đăng nhập lần đầu tiên) hoặc nếu certificate đã hết hạn, proxy sẽ từ chối kết nối và yêu cầu client đăng nhập tương tác bằng mật khẩu và xác thực 2FA(OTP) nếu được bật.
-- Nếu thông tin xác thực là chính xác, máy chủ xác thực sẽ tạo và ký ccertificate mới và trả lại certificate đó cho client thông qua proxy.
+- Nếu thông tin xác thực là chính xác, auth server sẽ tạo và ký ccertificate mới và trả lại certificate đó cho client thông qua proxy.
 
 ### 2.3: Tra cứu Node
 <img src="./images/teleport/node_lookup.png" />
 
--   Ở bước này, proxy xác định vị trí node được yêu cầu trong một cụm. Có -3 cơ chế tra cứu mà proxy sử dụng để tìm địa chỉ IP của node:
+-   Ở bước này, proxy xác định vị trí node được yêu cầu trong một cụm. Có ba cơ chế tra cứu mà proxy sử dụng để tìm địa chỉ IP của node:
     -   Sử dụng DNS để phân giải tên do Client yêu cầu.
     -   Hỏi Auth Server nếu có một Node được đăng ký với tên node request kết nối.
-    -   Yêu cầu Auth Server  tìm một node (hoặc các nodes) có nhãn phù hợp với tên được yêu cầu.
--   Nếu node được định vị, proxy sẽ thiết lập kết nối giữa Client và node được yêu cầu. Sau đó, node đích bắt đầu ghi lại phiên, gửi lịch sử phiên đến máy chủ xác thực để được lưu trữ.
+    -   Yêu cầu Auth Server tìm một node (hoặc các nodes) có nhãn phù hợp với tên được yêu cầu.
+-   Nếu node được định vị, proxy sẽ thiết lập kết nối giữa Client và node được yêu cầu. Sau đó, node đích bắt đầu ghi lại phiên, gửi lịch sử phiên đến Auth server để được lưu trữ.
 
 ### 2.4 Xác thực certificate Node
 
 <img src="./images/teleport/node_cluster_auth.png" />
 
--   Khi node nhận được yêu cầu kết nối, nó sẽ kiểm tra với Auth Server để xác thực certificate của node và xác thực tư cách thành viên Cluster.
+-   Khi node nhận được yêu cầu kết nối, node sẽ kiểm tra với Auth Server để xác thực certificate của node và xác nhận tư cách thành viên Cluster của Node.
 -   Nếu certificate node hợp lệ, node được phép truy cập Auth Server API cung cấp quyền truy cập vào thông tin về các node và người dùng trong Cluster.
 
 ### 2.5 Cấp quyền truy cập Node của user
@@ -55,6 +55,8 @@
 -   Cuối cùng, Client được phép tạo kết nối SSH tới một node.
 
 <img src="./images/teleport/proxy_client_connect.png" />
+
+> Architecture Introduction: https://goteleport.com/docs/architecture/overview/
 
 ### II. Cài đặt Teleport 
 ### 2.1 Mô hình
@@ -225,7 +227,7 @@
         2022-03-17T21:50:36+07:00 [PROXY:1]   WARN Restart watch on error: empty proxy list. resource-kind:proxy services/watcher.go:218
         root@teleport-access:~# 
     ```
--   Check ca_pin Authen server
+-   Check ca_pin Auth server
     ```sh
     root@teleport-access:~# tctl status
     Cluster  teleport-demo                                                           
@@ -234,7 +236,7 @@
     User CA  never updated                                                           
     Jwt CA   never updated                                                           
     CA pin   sha256:965b9f078932778963dc58edec2d3d96f07d5337d3a1f97dcfedbdfa9449efc6
-        ```
+    ```
 -   Create role admin
     ```sh
     cat<<EOF>admin.yaml
@@ -499,7 +501,7 @@
     Last login: Thu Mar 17 23:00:16 2022 from 10.0.0.1
     sinhtv@fb1671b5c208:~$ 
     ```
-- Tiến hành kiêm tra network tới các node bằng lênh
+- Tiến hành kiểm tra network tới các node bằng lệnh
     ```sh
     sinhtv@fb1671b5c208:~$ ping 10.20.0.11 -c4
     PING 10.20.0.11 (10.20.0.11) 56(84) bytes of data.
