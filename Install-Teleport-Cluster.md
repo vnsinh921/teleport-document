@@ -775,7 +775,7 @@
     root@teleport-demo:~# 
     ```
 ### 3.2 TELEPORT command: teleport help
-    ```sh
+
     root@teleport-demo:~# teleport help
     Usage: teleport [<flags>] <command> [<args> ...]
 
@@ -799,7 +799,7 @@
     Try 'teleport help [command]' to get help for a given command.
 
     root@teleport-demo:~# 
-    ```
+
 > Reference address: https://goteleport.com/docs/setup/reference/cli/
 
 
