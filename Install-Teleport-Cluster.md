@@ -136,7 +136,7 @@
       cluster_name: "teleport-demo"
       listen_addr: 0.0.0.0:3025
       tokens:
-      - proxy,node:78yto9pc7fvf71p0lo25c1s8st9jwh1vxgoh3uw6y0t5meqvh08j
+      - proxy,node:7d8ae42392ae8b7503dd3b76ea76aca6960689b5157f8523
       authentication:
         type: local
         second_factor: otp
@@ -235,7 +235,7 @@
     Host CA  never updated                                                           
     User CA  never updated                                                           
     Jwt CA   never updated                                                           
-    CA pin   sha256:965b9f078932778963dc58edec2d3d96f07d5337d3a1f97dcfedbdfa9449efc6
+    CA pin   sha256:8fb62b491b1c04048befc4a70b5cd4686b5de0b9acd5b4bf6629b5568811b314
     ```
 -   Create role admin
     ```sh
@@ -420,8 +420,8 @@
     teleport:
       nodename: pg-1 # Tnay đổi theo tên node
       data_dir: /var/lib/teleport
-      ca_pin: "sha256:965b9f078932778963dc58edec2d3d96f07d5337d3a1f97dcfedbdfa9449efc6"
-      auth_token: 78yto9pc7fvf71p0lo25c1s8st9jwh1vxgoh3uw6y0t5meqvh08j
+      ca_pin: "sha256:8fb62b491b1c04048befc4a70b5cd4686b5de0b9acd5b4bf6629b5568811b314"
+      auth_token: 7d8ae42392ae8b7503dd3b76ea76aca6960689b5157f8523
 
       auth_servers: 
         - 10.20.0.5:3025
@@ -467,84 +467,70 @@
     tctl nodes ls
     ```
     ```sh
-    root@teleport-access:~# tctl nodes ls
-    Nodename        UUID                                 Address         Labels                                                        
-    --------------- ------------------------------------ --------------- ------------------------------------------------------------- 
-    teleport-access 5a82256c-016a-40b5-9ae5-48523c175d5e 127.0.0.1:3022  env=example,hostname=teleport-access                          
-    pg-2            cb3029bb-5646-49ff-8ea4-1f4fb2b99d5f 10.20.0.12:3025 hostname=localhost.localdomain,role=node,type=teleport-client 
-    pg-1            e4617292-77a8-4897-8cc3-6dce26dc201c 10.20.0.11:3025 hostname=localhost.localdomain,role=node,type=teleport-client 
-    pg-3            f83c40e4-a31a-48ed-97cc-1e8b3a310e71 10.20.0.13:3025 hostname=localhost.localdomain,role=node,type=teleport-client 
-    root@teleport-access:~# 
-
+    root@teleport-demo:~# tctl nodes ls
+    Nodename               UUID                                 Address         Labels                                       
+    ---------------------- ------------------------------------ --------------- -------------------------------------------- 
+    teleport-access        c06697a5-ecd2-44e1-b710-d8109bee9c38 127.0.0.1:3022  hostname=teleport-demo,role=node,type=teleport-client
+    pg-1                   9da0ac8b-0254-42e3-9335-4338f0267ae5 10.20.0.11:3025 hostname=pg-1,role=node,type=teleport-client 
+    pg-2                   f779ccda-ade0-414d-b1d0-1cf25b9dfab0 10.20.0.12:3025 hostname=pg-2,role=node,type=teleport-client 
+    pg-3                   fd076dae-05e0-4ef7-a4ac-a578235d0e32 10.20.0.13:3025 hostname=pg-3,role=node,type=teleport-client 
+    root@teleport-demo:~# 
     ```
 -   Web UI
 <img src="./images/teleport/node_cluster.png" />      
 
 ### III. Teleport CLI command
-### 3.1 Tsh command
--   Từ máy Client ssh vao Server trung gian có thể kết nối tới cụm Teleport Private
+### 3.1 TSH command
+-   Từ máy Client IP 10.0.0.1 cần kết nối tới host Private dải IP 10.20.0.xx
+-   Tiến hành kiểm tra network tới các node bằng lệnh
     ```sh
-    ssh sinhtv@10.0.0.5 -p 2323
-    ```
-    ```sh
-    sinhtv@HP-348-G7:~$ ssh sinhtv@10.0.0.5 -p 2323
-    Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-104-generic x86_64)
-
-    * Documentation:  https://help.ubuntu.com
-    * Management:     https://landscape.canonical.com
-    * Support:        https://ubuntu.com/advantage
-
-    This system has been minimized by removing packages and content that are
-    not required on a system that users do not log into.
-
-    To restore this content, you can run the 'unminimize' command.
-    Last login: Thu Mar 17 23:00:16 2022 from 10.0.0.1
-    sinhtv@fb1671b5c208:~$ 
-    ```
-- Tiến hành kiểm tra network tới các node bằng lệnh
-    ```sh
-    sinhtv@fb1671b5c208:~$ ping 10.20.0.11 -c4
+    sinhtv@HP-348-G7:~$ ip a
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet 127.0.0.1/8 scope host lo
+           valid_lft forever preferred_lft forever
+    2: eno1: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN group default qlen 1000
+        link/ether bc:e9:2f:c9:65:db brd ff:ff:ff:ff:ff:ff
+        altname enp1s0
+    3: wlo1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+        link/ether 8c:c8:4b:c5:93:23 brd ff:ff:ff:ff:ff:ff
+        altname wlp2s0
+        inet 10.100.0.183/24 brd 10.100.0.255 scope global dynamic noprefixroute wlo1
+           valid_lft 6966sec preferred_lft 6966sec
+    6: vmnet8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000
+        link/ether 00:50:56:c0:00:08 brd ff:ff:ff:ff:ff:ff
+        inet 10.0.0.1/24 brd 10.0.0.255 scope global vmnet8
+           valid_lft forever preferred_lft forever
+    sinhtv@HP-348-G7:~$ ping -c4 10.20.0.11
     PING 10.20.0.11 (10.20.0.11) 56(84) bytes of data.
-    64 bytes from 10.20.0.11: icmp_seq=1 ttl=63 time=0.954 ms
-    64 bytes from 10.20.0.11: icmp_seq=2 ttl=63 time=0.756 ms
-    64 bytes from 10.20.0.11: icmp_seq=3 ttl=63 time=1.20 ms
-    64 bytes from 10.20.0.11: icmp_seq=4 ttl=63 time=0.931 ms
 
     --- 10.20.0.11 ping statistics ---
-    4 packets transmitted, 4 received, 0% packet loss, time 3005ms
-    rtt min/avg/max/mdev = 0.756/0.959/1.196/0.156 ms
-    sinhtv@fb1671b5c208:~$ 
-    sinhtv@fb1671b5c208:~$ ping 10.20.0.12 -c4
+    4 packets transmitted, 0 received, 100% packet loss, time 3071ms
+
+    sinhtv@HP-348-G7:~$ ping -c4 10.20.0.12
     PING 10.20.0.12 (10.20.0.12) 56(84) bytes of data.
-    64 bytes from 10.20.0.12: icmp_seq=1 ttl=63 time=0.718 ms
-    64 bytes from 10.20.0.12: icmp_seq=2 ttl=63 time=1.08 ms
-    64 bytes from 10.20.0.12: icmp_seq=3 ttl=63 time=0.825 ms
-    64 bytes from 10.20.0.12: icmp_seq=4 ttl=63 time=0.794 ms
 
     --- 10.20.0.12 ping statistics ---
-    4 packets transmitted, 4 received, 0% packet loss, time 3005ms
-    rtt min/avg/max/mdev = 0.718/0.853/1.076/0.134 ms
-    sinhtv@fb1671b5c208:~$ 
-    sinhtv@fb1671b5c208:~$ ping 10.20.0.13 -c4
+    4 packets transmitted, 0 received, 100% packet loss, time 3075ms
+
+    sinhtv@HP-348-G7:~$ ping -c4 10.20.0.13
     PING 10.20.0.13 (10.20.0.13) 56(84) bytes of data.
-    64 bytes from 10.20.0.13: icmp_seq=1 ttl=63 time=1.16 ms
-    64 bytes from 10.20.0.13: icmp_seq=2 ttl=63 time=1.08 ms
-    64 bytes from 10.20.0.13: icmp_seq=3 ttl=63 time=1.07 ms
-    64 bytes from 10.20.0.13: icmp_seq=4 ttl=63 time=1.51 ms
 
     --- 10.20.0.13 ping statistics ---
-    4 packets transmitted, 4 received, 0% packet loss, time 3005ms
-    rtt min/avg/max/mdev = 1.065/1.200/1.506/0.179 ms
-    sinhtv@fb1671b5c208:~$ 
-    ```
--   Kết nối bằng openssh thông thường
-    ```sh   
-    sinhtv@fb1671b5c208:~$ ssh sinhtv@10.20.0.11
-    The authenticity of host '10.20.0.11 (10.20.0.11)' can't be established.
-    ECDSA key fingerprint is SHA256:X1E2gLp7/w529wczLAJi6PMsQ75xuNqpCPmQupCnyH4.
-    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-    Warning: Permanently added '10.20.0.11' (ECDSA) to the list of known hosts.
-    sinhtv@10.20.0.11's password: 
+    4 packets transmitted, 0 received, 100% packet loss, time 3055ms
+
+    sinhtv@HP-348-G7:~$ ping -c4 10.0.0.5
+    PING 10.0.0.5 (10.0.0.5) 56(84) bytes of data.
+    64 bytes from 10.0.0.5: icmp_seq=1 ttl=64 time=0.867 ms
+    64 bytes from 10.0.0.5: icmp_seq=2 ttl=64 time=3.28 ms
+    64 bytes from 10.0.0.5: icmp_seq=3 ttl=64 time=0.490 ms
+    64 bytes from 10.0.0.5: icmp_seq=4 ttl=64 time=0.539 ms
+
+    --- 10.0.0.5 ping statistics ---
+    4 packets transmitted, 4 received, 0% packet loss, time 3006ms
+    rtt min/avg/max/mdev = 0.490/1.294/3.282/1.156 ms
+    sinhtv@HP-348-G7:~$ 
+
     ```
 -   Login vào cluster
     ```sh
@@ -552,32 +538,34 @@
     ```
 -   Nhập password & OTP user sinhtv sau đó kiểm tra trạng thái kết nối
     ```sh
-    sinhtv@fb1671b5c208:~$ tsh login --proxy=10.0.0.5:3080 --user=sinhtv --insecure
+    sinhtv@HP-348-G7:~$ tsh login --proxy=10.0.0.5:3080 --user=sinhtv --insecure
     Enter password for Teleport user sinhtv:
     Enter your OTP token:
-    613026
+    709166
     WARNING: You are using insecure connection to SSH proxy https://10.0.0.5:3080
     > Profile URL:        https://10.0.0.5:3080
-    Logged in as:       sinhtv
-    Cluster:            teleport-demo
-    Roles:              user
-    Logins:             sinhtv
-    Kubernetes:         enabled
-    Valid until:        2022-03-18 11:11:43 +0700 +07 [valid for 12h0m0s]
-    Extensions:         permit-agent-forwarding, permit-port-forwarding, permit-pty
+      Logged in as:       sinhtv
+      Cluster:            teleport-demo
+      Roles:              user
+      Logins:             sinhtv
+      Kubernetes:         enabled
+      Valid until:        2022-03-19 10:37:04 +0700 +07 [valid for 12h0m0s]
+      Extensions:         permit-agent-forwarding, permit-port-forwarding, permit-pty
 
-    sinhtv@fb1671b5c208:~$ 
+    sinhtv@HP-348-G7:~$ 
+
     ```
 -   Liệt kê các node trong cluster
     ```sh
-    sinhtv@fb1671b5c208:~$ tsh ls
-    Node Name       Address         Labels                                                        
-    --------------- --------------- ------------------------------------------------------------- 
-    pg-1            10.20.0.11:3025 hostname=localhost.localdomain,role=node,type=teleport-client 
-    pg-2            10.20.0.12:3025 hostname=localhost.localdomain,role=node,type=teleport-client 
-    pg-3            10.20.0.13:3025 hostname=localhost.localdomain,role=node,type=teleport-client 
-    teleport-access 127.0.0.1:3022  env=example,hostname=teleport-access                          
-    sinhtv@fb1671b5c208:~$ 
+    sinhtv@HP-348-G7:~$ tsh ls
+    Node Name       Address         Labels                                                
+    --------------- --------------- ----------------------------------------------------- 
+    pg-1            10.20.0.11:3025 hostname=pg-1,role=node,type=teleport-client          
+    pg-2            10.20.0.12:3025 hostname=pg-2,role=node,type=teleport-client          
+    pg-3            10.20.0.13:3025 hostname=pg-3,role=node,type=teleport-client          
+    teleport-access 127.0.0.1:3022  hostname=teleport-demo,role=node,type=teleport-client 
+
+    sinhtv@HP-348-G7:~$ 
     ```
 -   Kết nối tới node trong list nodes bằng giao thức teleport ssh
     ```sh
@@ -586,69 +574,233 @@
     tsh ssh [USER]@[HOSTNAME]
     ```
     ```sh
-    sinhtv@fb1671b5c208:~$ tsh ssh 10.20.0.11
-    [sinhtv@localhost ~]$ ip a
+    sinhtv@HP-348-G7:~$ tsh ssh sinhtv@pg-1
+    [sinhtv@pg-1 ~]$ ip a
     1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
         link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
         inet 127.0.0.1/8 scope host lo
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 ::1/128 scope host 
-        valid_lft forever preferred_lft forever
-    2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-        link/ether 00:0c:29:74:59:cc brd ff:ff:ff:ff:ff:ff
-    3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+           valid_lft forever preferred_lft forever
+    2: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
         link/ether 00:0c:29:74:59:d6 brd ff:ff:ff:ff:ff:ff
         inet 10.20.0.11/24 brd 10.20.0.255 scope global noprefixroute ens34
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 fe80::69a4:4a4b:437f:9fad/64 scope link noprefixroute 
-        valid_lft forever preferred_lft forever
-    [sinhtv@localhost ~]$ 
+           valid_lft forever preferred_lft forever
+    [sinhtv@pg-1 ~]$ 
     ```
+    
     ```sh
-    sinhtv@fb1671b5c208:~$ tsh ssh 10.20.0.12
-    [sinhtv@localhost ~]$ ip a
+    sinhtv@HP-348-G7:~$ tsh ssh sinhtv@pg-2
+    [sinhtv@pg-2 ~]$ ip a
     1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
         link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
         inet 127.0.0.1/8 scope host lo
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 ::1/128 scope host 
-        valid_lft forever preferred_lft forever
-    2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-        link/ether 00:0c:29:7a:bb:5a brd ff:ff:ff:ff:ff:ff
-    3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+           valid_lft forever preferred_lft forever
+    2: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
         link/ether 00:0c:29:7a:bb:64 brd ff:ff:ff:ff:ff:ff
         inet 10.20.0.12/24 brd 10.20.0.255 scope global noprefixroute ens34
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 fe80::69a4:4a4b:437f:9fad/64 scope link tentative noprefixroute dadfailed 
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 fe80::a43d:6adf:ea44:57/64 scope link noprefixroute 
-        valid_lft forever preferred_lft forever
-    [sinhtv@localhost ~]$ 
+           valid_lft forever preferred_lft forever
+    [sinhtv@pg-2 ~]$ 
     ```
     ```sh
-    sinhtv@fb1671b5c208:~$ tsh ssh 10.20.0.13
-    [sinhtv@localhost ~]$ ip a
+    sinhtv@HP-348-G7:~$ tsh ssh sinhtv@10.20.0.13
+    [sinhtv@pg-3 ~]$ ip a
     1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
         link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
         inet 127.0.0.1/8 scope host lo
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 ::1/128 scope host 
-        valid_lft forever preferred_lft forever
-    2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-        link/ether 00:0c:29:7b:55:71 brd ff:ff:ff:ff:ff:ff
-    3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+           valid_lft forever preferred_lft forever
+    2: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
         link/ether 00:0c:29:7b:55:7b brd ff:ff:ff:ff:ff:ff
         inet 10.20.0.13/24 brd 10.20.0.255 scope global noprefixroute ens34
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 fe80::a43d:6adf:ea44:57/64 scope link tentative noprefixroute dadfailed 
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 fe80::69a4:4a4b:437f:9fad/64 scope link tentative noprefixroute dadfailed 
-        valid_lft forever preferred_lft forever
+           valid_lft forever preferred_lft forever
         inet6 fe80::c163:4779:c750:b173/64 scope link noprefixroute 
-        valid_lft forever preferred_lft forever
-    [sinhtv@localhost ~]$ 
+           valid_lft forever preferred_lft forever
+    [sinhtv@pg-3 ~]$ 
     ```
+-   SCP file từ máy local tới node teleport
+    ```sh
+    tsh scp [FILE_NAME] [USER]@[IP NODE]:~/
+    ```
+    ```sh
+    sinhtv@HP-348-G7:~$ tsh scp Dockerfile sinhtv@pg-1:~/
+    -> Dockerfile (556)
+    sinhtv@HP-348-G7:~$ tsh ssh sinhtv@pg-1
+    [sinhtv@pg-1 ~]$ ls
+    Dockerfile
+    [sinhtv@pg-1 ~]$ 
+    ```
+-   SCP file từ  node teleport về máy local
+    ```sh
+    tsh scp  [USER]@[IP NODE]:~/[FILE_NAME_ON_NODE] ~/
+    ```
+    ```sh
+    sinhtv@HP-348-G7:~$ tsh scp sinhtv@pg-1:~/pg-1.file ./
+    <- pg-1.file (556)
+    sinhtv@HP-348-G7:~$ ls -l |grep pg-1.file
+    -rw-rw-r--  1 sinhtv sinhtv   556 Mar 18 22:46 pg-1.file
+    sinhtv@HP-348-G7:~$ 
+    ```
+-   TSH list command: tsh help
+    ```sh
+    sinhtv@HP-348-G7:~$ tsh help
+    Usage: tsh [<flags>] <command> [<args> ...]
 
+    TSH: Teleport Authentication Gateway Client
+
+    Flags:
+      -l, --login                    Remote host login
+          --proxy                    SSH proxy address
+          --user                     SSH proxy user [sinhtv]
+          --ttl                      Minutes to live for a SSH session
+      -i, --identity                 Identity file
+          --cert-format              SSH certificate format
+          --insecure                 Do not verify server's certificate and host name. Use only in test environments
+          --auth                     Specify the type of authentication connector to use.
+          --skip-version-check       Skip version checking between server and client.
+      -d, --debug                    Verbose logging to stdout
+      -k, --add-keys-to-agent        Controls how keys are handled. Valid values are [auto no yes only].
+          --enable-escape-sequences  Enable support for SSH escape sequences. Type '~?' during an SSH session to list supported sequences. Default is enabled.
+          --bind-addr                Override host:port used when opening a browser for cluster logins
+      -J, --jumphost                 SSH jumphost
+
+    Commands:
+      help         Show help.
+      version      Print the version
+      ssh          Run shell or execute a command on a remote SSH node
+      aws          Access AWS API.
+      apps ls      List available applications.
+      apps login   Retrieve short-lived certificate for an app.
+      apps logout  Remove app certificate.
+      apps config  Print app connection information.
+      proxy ssh    Start local TLS proxy for ssh connections when using Teleport in single-port mode
+      proxy db     Start local TLS proxy for database connections when using Teleport in single-port mode
+      db ls        List all available databases.
+      db login     Retrieve credentials for a database.
+      db logout    Remove database credentials.
+      db env       Print environment variables for the configured database.
+      db config    Print database connection information. Useful when configuring GUI clients.
+      db connect   Connect to a database.
+      join         Join the active SSH session
+      play         Replay the recorded SSH session
+      scp          Secure file copy
+      ls           List remote SSH nodes
+      clusters     List available Teleport clusters
+      login        Log in to a cluster and retrieve the session certificate
+      logout       Delete a cluster certificate
+      status       Display the list of proxy servers and retrieved certificates
+      env          Print commands to set Teleport session environment variables
+      request ls   List access requests
+      request show Show request details
+      request new  Create a new access request
+      request review Review an access request
+      kube ls      Get a list of kubernetes clusters
+      kube login   Login to a kubernetes cluster
+      kube sessions Get a list of active kubernetes sessions.
+      kube exec    Execute a command in a kubernetes pod
+      kube join    Join an active Kubernetes session.
+      mfa ls       Get a list of registered MFA devices
+      mfa add      Add a new MFA device
+      mfa rm       Remove a MFA device
+      config       Print OpenSSH configuration details
+
+    Try 'tsh help [command]' to get help for a given command.
+    ```
+### 3.2 TCTL command: tsh help
+    ```sh
+    root@teleport-demo:~# tctl help
+    Usage: tctl [<flags>] <command> [<args> ...]
+
+    CLI Admin tool for the Teleport Auth service. Runs on a host where Teleport Auth is running.
+
+    Flags:
+      -d, --debug        Enable verbose logging to stderr
+      -c, --config       Path to a configuration file [/etc/teleport.yaml]. Can also be set via the TELEPORT_CONFIG_FILE environment variable.
+          --auth-server  Attempts to connect to specific auth/proxy address(es) instead of local auth [127.0.0.1:3025]
+      -i, --identity     Path to an identity file. Must be provided to make remote connections to auth. An identity file can be exported with 'tctl auth sign'
+          --insecure     When specifying a proxy address in --auth-server, do not verify its TLS certificate. Danger: any data you send can be intercepted or modified by an attacker.
+
+    Commands:
+      help         Show help.
+      users add    Generate a user invitation token [Teleport DB users only]
+      users update Update user account
+      users ls     Lists all user accounts.
+      users rm     Deletes user accounts
+      users reset  Reset user password and generate a new token [Teleport DB users only]
+      nodes add    Generate a node invitation token
+      nodes ls     List all active SSH nodes within the cluster
+      tokens add   Create a invitation token
+      tokens rm    Delete/revoke an invitation token
+      tokens ls    List node and user invitation tokens
+      auth export  Export public cluster (CA) keys to stdout
+      auth sign    Create an identity file(s) for a given user
+      auth rotate  Rotate certificate authorities in the cluster
+      create       Create or update a Teleport resource from a YAML file
+      update       Update resource fields
+      rm           Delete a resource
+      get          Print a YAML declaration of various Teleport resources
+      status       Report cluster status
+      top          Report diagnostic information
+      requests ls  Show active access requests
+      requests get Show access request by ID
+      requests approve Approve pending access request
+      requests deny Deny pending access request
+      requests create Create pending access request
+      requests rm  Delete an access request
+      requests review Review an access request
+      apps ls      List all applications registered with the cluster.
+      db ls        List all databases registered with the cluster.
+      access ls    List all accesses within the cluster.
+      lock         Create a new lock.
+      bots ls      List all certificate renewal bots registered with the cluster.
+      bots add     Add a new certificate renewal bot to the cluster.
+      bots rm      Permanently remove a certificate renewal bot from the cluster.
+      version      Print cluster version
+
+    Try 'tctl help [command]' to get help for a given command.
+
+    root@teleport-demo:~# 
+    ```
+### 3.2 TELEPORT command: teleport help
+    ```sh
+    root@teleport-demo:~# teleport help
+    Usage: teleport [<flags>] <command> [<args> ...]
+
+    Clustered SSH service. Learn more at https://goteleport.com/teleport
+
+    Flags:
+
+    Commands:
+      help         Show help.
+      start        Starts the Teleport service.
+      status       Print the status of the current SSH session.
+      configure    Generate a simple config file to get started.
+      version      Print the version.
+      app start    Start application proxy service.
+      db start     Start database proxy service.
+      db configure create Creates a sample Database Service configuration.
+      db configure bootstrap Bootstrap the necessary configuration for the database agent. It reads the provided agent configuration to determine what will be bootstrapped.
+      db configure aws print-iam Generate and show IAM policies.
+      db configure aws create-iam Generate, create and attach IAM policies.
+
+    Try 'teleport help [command]' to get help for a given command.
+
+    root@teleport-demo:~# 
+    ```
+> Reference address: https://goteleport.com/docs/setup/reference/cli/
 
 
 
