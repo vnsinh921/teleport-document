@@ -36,7 +36,7 @@
 
 -   Ở bước này, proxy xác định vị trí node được yêu cầu trong một cụm. Có ba cơ chế tra cứu mà proxy sử dụng để tìm địa chỉ IP của node:
     -   Sử dụng DNS để phân giải tên do Client yêu cầu.
-    -   Hỏi Auth Server nếu có một Node được đăng ký với tên node request kết nối.
+    -   Hỏi Auth Server nếu có một Node được đăng ký với tên mà Client request kết nối.
     -   Yêu cầu Auth Server tìm một node (hoặc các nodes) có nhãn phù hợp với tên được yêu cầu.
 -   Nếu node được định vị, proxy sẽ thiết lập kết nối giữa Client và node được yêu cầu. Sau đó, node đích bắt đầu ghi lại phiên, gửi lịch sử phiên đến Auth server để được lưu trữ.
 
