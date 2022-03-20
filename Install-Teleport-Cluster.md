@@ -44,8 +44,8 @@
 
 <img src="./images/teleport/node_cluster_auth.png" />
 
--   Khi node nhận được yêu cầu kết nối, node sẽ kiểm tra với Auth Server để xác thực certificate của node và xác nhận tư cách thành viên Cluster của Node.
--   Nếu certificate node hợp lệ, node được phép truy cập Auth Server API cung cấp quyền truy cập vào thông tin về các node và người dùng trong Cluster.
+-   Khi node nhận được yêu cầu kết nối, node sẽ kiểm tra với Auth Server để xác thực certificate của node và xác nhận tư cách là node thành viên của Cluster
+-   Nếu certificate node hợp lệ, node được phép truy cập API Auth Server, yêu cầu cung cấp danh sách người dùng và thông tin đăng nhập được ủy quyền.
 
 ### 2.5 Cấp quyền truy cập Node của user
 
