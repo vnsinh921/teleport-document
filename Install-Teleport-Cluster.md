@@ -17,7 +17,7 @@
 ### 2.1 Khởi tạo kết nối từ Client
 <img src="./images/teleport/initiate.png" />  
 
-- Client khởi tạo kết nối từ SSH tới proxy từ giao diện UI hoặc CLI. Khi thiết lập kết nối Client phải cung cấp certificate của nó. Client luôn luôn phải kết nối qua proxy với 2 lý do:
+- Client khởi tạo kết nối từ SSH từ giao diện UI hoặc CLI tới Proxy. Khi thiết lập kết nối Client phải cung cấp certificate của nó. Client luôn luôn phải kết nối qua proxy với 2 lý do:
     -   Các node không phải lúc nào cũng có thể truy cập từ một network bên ngoài
     -   Proxy ghi lại các phiên SSH và theo dõi hoạt động của người dùng
 
@@ -29,7 +29,7 @@
 <img src="./images/teleport/cert_invalid.png" />
 
 - Nếu không có certificate nào được cung cấp trước đó (đăng nhập lần đầu tiên) hoặc nếu certificate đã hết hạn, proxy sẽ từ chối kết nối và yêu cầu client đăng nhập tương tác bằng mật khẩu và xác thực 2FA(OTP) nếu được bật.
-- Nếu thông tin xác thực là chính xác, auth server sẽ tạo và ký ccertificate mới và trả lại certificate đó cho client thông qua proxy.
+- Nếu thông tin xác thực là chính xác, auth server sẽ tạo và ký certificate mới và trả lại certificate đó cho client thông qua proxy.
 
 ### 2.3: Tra cứu Node
 <img src="./images/teleport/node_lookup.png" />
